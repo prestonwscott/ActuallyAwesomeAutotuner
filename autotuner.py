@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import *
 from tkinter import ttk
 
 # Initialize the window
@@ -35,12 +36,14 @@ main_frame = tk.Frame(root)
 main_frame.pack(fill=tk.BOTH, expand=True)
 
 # Left frame
-left_frame = tk.Frame(main_frame, bg='light gray')
-left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+left_frame = tk.Frame(main_frame, bg='light blue')
+#left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+button = Button(left_frame, text="test", padx=20, pady=20).pack()
 
 # Right frame
-right_frame = tk.Frame(main_frame)
-right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+right_frame = tk.Frame(main_frame, bg='light green')
+#right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
 # Create the notebook in the right frame
 notebook = ttk.Notebook(right_frame)
@@ -58,6 +61,8 @@ tk.Label(effects_tab, text="This is the Effects tab").pack()
 tk.Label(devices_tab, text="This is the Devices tab").pack()
 
 
+left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
 # Run the application
 root.mainloop()
