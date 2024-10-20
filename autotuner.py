@@ -4,9 +4,10 @@ from tkinter import ttk
 # Initialize the window
 root = tk.Tk()
 root.title("Autotuner")
-# Set the window gemetry (Size) and make it  not resizable
+# Set the window geometry
 root.geometry("800x500")
-root.resizable(False, False)
+root.resizable(width=True, height=True)
+
 # Create a menu bar
 menu_bar = tk.Menu(root)
 
@@ -29,36 +30,33 @@ menu_bar.add_cascade(label="Help", menu=help_menu)
 # Configure the menu bar
 root.config(menu=menu_bar)
 
-
+# Main frame to hold everything
 main_frame = tk.Frame(root)
-main_frame.grid(row=0, column=0, sticky="nsew")
+main_frame.pack(fill=tk.BOTH, expand=True)
 
-# Configure the grid layout
-root.grid_rowconfigure(0, weight=1)
-root.grid_columnconfigure(0, weight=1)
+# Left frame
+left_frame = tk.Frame(main_frame, bg='light gray')
+left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-
-# Position left frame
-left_frame = tk.Frame(main_frame, width=400, height=600, bg='light gray')
-left_frame.grid(row=0, column=0, sticky="nsew")
-
-# Position right frame
+# Right frame
 right_frame = tk.Frame(main_frame)
-right_frame.grid(row=0, column=1, sticky="nsew")
+right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-
-# Position notebook within right frame
+# Create the notebook in the right frame
 notebook = ttk.Notebook(right_frame)
-notebook.grid(row=0, column=0, sticky="nsew")
+notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 # Create the effects and devices tabs
-effects_tab = tk.Frame(notebook)
-effects_tab.pack(fill=tk.BOTH, expand=True)
+effects_tab = ttk.Frame(notebook)
 notebook.add(effects_tab, text="Effects")
 
-devices_tab = tk.Frame(notebook)
-devices_tab.pack(fill=tk.BOTH, expand=True)
+devices_tab = ttk.Frame(notebook)
 notebook.add(devices_tab, text="Devices")
+
+# Add example content to the tabs to make them visible
+tk.Label(effects_tab, text="This is the Effects tab").pack()
+tk.Label(devices_tab, text="This is the Devices tab").pack()
+
 
 
 # Run the application
