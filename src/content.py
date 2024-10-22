@@ -1,5 +1,5 @@
 import tkinter as tk
-from .libs import *
+from .lib import *
 
 class Content(tk.Frame):
     def __init__(self, parent):
