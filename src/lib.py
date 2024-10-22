@@ -1,4 +1,5 @@
 import tkinter as tk
+from .utils import *
 
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
@@ -9,6 +10,8 @@ def darken_color(parent, color, factor):
 
 def on_click(parent, id):
     print(id)
+    if(id == "Microphone toggle"):
+        autotune()
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:
