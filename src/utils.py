@@ -2,16 +2,14 @@ import argparse
 import librosa
 import librosa.display
 import numpy as np
-import matplotlib.pyplot as plt
 import soundfile as sf
 import sounddevice as sd
-import scipy.signal as sig
 import psola
 from functools import partial
 
 #After recording a snippet, audio will be saved to a file in 'ActuallyAwesomeAutotuner/raw.wav'
 #This file may then be autotuned and saved under 'ActuallyAwesomeAutotuner/tuned.wav'
-#If tuning is on, then 'raw.wav' is loaded in memory, o/w 'tuned.wav' will be.
+#If tuning is on, then 'tuned.wav' is loaded in memory for playback, o/w 'raw.wav' will be.
 #Adding onto an existing recording will add to 'raw.wav' and 'tuned.wav' will regenerate
 #Loading a saved recording will import it as 'raw.wav' and tuned material cannot be toggled
 
