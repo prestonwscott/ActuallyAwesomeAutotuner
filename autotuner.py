@@ -17,8 +17,8 @@ class MainApp:
         file_menu = tk.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="New")
         file_menu.add_command(label="Open")
-        file_menu.add_command(label="Save")
-        file_menu.add_command(label="Save As...")
+        file_menu.add_command(label="Save", command=audiofunctions.save_audio)
+        file_menu.add_command(label="Save As...", command=audiofunctions.save_audio)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         # Create a Help menu
