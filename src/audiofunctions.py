@@ -27,6 +27,7 @@ def record_audio():
 # Function to save recorded audio
 def save_audio():
     global recorded_audio
+    # Error if no audio was recorded to save
     if recorded_audio is None:
         messagebox.showerror("Error", "No audio recorded yet!")
         return
