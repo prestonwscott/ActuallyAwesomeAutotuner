@@ -21,8 +21,10 @@ sd.default.channels = 1
 #Global variables
 mute = False
 volume = 1
+speed = 1.0
 mic_pressed = False
-recording = []
+y = []
+sr = 44100
 recording_thread = None
 recording_started = False
 
@@ -32,11 +34,27 @@ def open_file(filepath):
     return librosa.load(filepath, sr=None, mono=True)
 #usage: y, sr = open_file(filepath)
 
-def change_speed(y, old_n, new_n):
-    y = librosa.effects.time_stretch(y, (new_n / old_n))
+def save_audio():
+    global y
+    if y is None:
+        messagebox.showerror("Error", "No audio recorded yet!")
+        return
 
-def change_volume(y, old_n, new_n):
-    y *= (new_n / old_n)
+    # Prompt the user to save the file using a file dialog
+    file_path = filedialog.asksaveasfilename(defaultextension=".wav", filetypes=[("WAV files", "*.wav")])
+
+    if file_path:
+        # Save the audio to the selected file
+        write(file_path, fr, y)
+        messagebox.showinfo("Success", f"Audio saved to {file_path}")
+
+def change_speed(y, new_speed):
+    y = librosa.effects.time_stretch(y, (new_speed / speed))
+    speed = new_speed
+
+def change_volume(y, new_volume):
+    y *= (new_volume / volume)
+    volume = new_volume
 
 def play_audio(y, sr):
     global volume
@@ -50,7 +68,6 @@ def mute_audio():
     else:
         print("Unmuted")
 
-
 def stop_audio():
     sd.stop()
 
@@ -59,17 +76,17 @@ def record_callback(indata, frames, time, status):
     if status:
         print(status)
     if not mute:  # Check if mute is off before appending data
-        recording.append(indata.copy())
+        y.append(indata.copy())
     else:
         # Append zeros instead of actual audio to keep the buffer length consistent
-        recording.append(np.zeros_like(indata))
+        y.append(np.zeros_like(indata))
 
 def record_audio(callback=None):
-    global mic_pressed, recording_started, recording, recording_thread
+    global mic_pressed, recording_started, y, recording_thread
 
     if not recording_started:
         # Start recording
-        recording = []  # Reset the recording buffer
+        y = []  # Reset the recording buffer (for now)
         mic_pressed = True
         recording_started = True
         
@@ -96,9 +113,9 @@ def record_audio(callback=None):
             recording_thread = None  # Reset the thread variable
 
         # Save the recording
-        if recording:
-            recording = np.concatenate(recording, axis=0)  # Concatenate the recorded frames
-            sf.write('raw.wav', recording, sd.default.samplerate)
+        if y:
+            y = np.concatenate(y, axis=0)  # Concatenate the recorded frames
+            sf.write('raw.wav', y, sd.default.samplerate)
             print("Recording saved as 'raw.wav'.")
 
         if callback:

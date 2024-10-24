@@ -17,8 +17,7 @@ class MainApp:
         file_menu = tk.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="New")
         file_menu.add_command(label="Open")
-        file_menu.add_command(label="Save")
-        file_menu.add_command(label="Save As...")
+        file_menu.add_command(label="Save As...", command=utils.save_audio)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         # Create a Help menu
@@ -38,13 +37,11 @@ class MainApp:
 
         # Left frame
         left_frame = tk.Frame(main_frame)
-        #left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         content = Content(left_frame)
         content.pack(padx=60, pady=60)
 
         # Right frame
         right_frame = tk.Frame(main_frame, bg='light green')
-        #right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # Create the notebook in the right frame
         notebook = ttk.Notebook(right_frame)
