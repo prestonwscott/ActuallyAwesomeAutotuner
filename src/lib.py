@@ -11,7 +11,10 @@ def darken_color(parent, color, factor):
 def on_click(parent, id):
     print(id)
     if(id == "Microphone toggle"):
-        autotune()
+        record_audio(autotune)
+        
+    if(id == "Mute toggle"):
+        mute_audio()
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:
