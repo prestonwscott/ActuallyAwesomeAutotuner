@@ -16,7 +16,7 @@ import threading
 #Sound device defaults
 sd.default.samplerate = 44100
 sd.default.device = None
-sd.default.channels = 1
+sd.default.channels = 2
 
 #Global variables
 mute = False
@@ -27,6 +27,7 @@ y = []
 sr = 44100
 recording_thread = None
 recording_started = False
+decibels_L,decibels_R = 0,0
 
 #NOTE: 'y' represents the audio file data, 'sr' is the sample rate of y
 
@@ -71,18 +72,27 @@ def mute_audio():
 def stop_audio():
     sd.stop()
 
+def rms_to_db(rms):
+    return 20 * np.log10(rms) if rms > 0 else -np.inf
+
 def record_callback(indata, frames, time, status):
     """Callback function for recording audio."""
+    global decibels_L,decibels_R
     if status:
         print(status)
     if not mute:  # Check if mute is off before appending data
         y.append(indata.copy())
+        # Get the left channel and right channel deciebels respectively
+        rms_L = np.sqrt(np.mean(indata[:,0]**2))
+        decibels_L = rms_to_db(rms_L)
+        rms_R = np.sqrt(np.mean(indata[:,1]**2))
+        decibels_R = rms_to_db(rms_R)
     else:
         # Append zeros instead of actual audio to keep the buffer length consistent
         y.append(np.zeros_like(indata))
 
 def record_audio(callback=None):
-    global mic_pressed, recording_started, y, recording_thread
+    global mic_pressed, recording_started, y, recording_thread, decibels_L, decibels_R
 
     if not recording_started:
         # Start recording
@@ -94,7 +104,7 @@ def record_audio(callback=None):
 
         # Start the audio input stream in a separate thread
         def start_stream():
-            with sd.InputStream(callback=record_callback, channels=1, samplerate=sd.default.samplerate):
+            with sd.InputStream(callback=record_callback, channels=sd.default.channels, samplerate=sd.default.samplerate):
                 while recording_started:
                     sd.sleep(100)  # Keep the stream open
 
@@ -105,6 +115,7 @@ def record_audio(callback=None):
         # Stop recording
         recording_started = False
         mic_pressed = False
+        decibels_L,decibels_R=0,0
         stop_audio()
 
         # Wait for the recording thread to finish, if it exists

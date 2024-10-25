@@ -30,6 +30,9 @@ def on_leave(parent, shapes, factor):
         else:    
             new_color = darken_color(parent, current_color, 1/factor)
             parent.itemconfig(shape, fill=new_color)
+    
+def update_DBmeter(parent):
+    pass
 
 def create_rounded_rect(parent, x, y, width, height, color):
     radius = 10
