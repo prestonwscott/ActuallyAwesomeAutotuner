@@ -7,6 +7,7 @@ import sounddevice as sd
 import psola
 from functools import partial
 import threading
+import random
 #After recording a snippet, audio will be saved to a file in 'ActuallyAwesomeAutotuner/raw.wav'
 #This file may then be autotuned and saved under 'ActuallyAwesomeAutotuner/tuned.wav'
 #If tuning is on, then 'tuned.wav' is loaded in memory for playback, o/w 'raw.wav' will be.
@@ -15,8 +16,8 @@ import threading
 
 #Sound device defaults
 sd.default.samplerate = 44100
-sd.default.device = None
-sd.default.channels = 2
+sd.default.device = 8 #Device is id-based; check for devices by calling the function sd.query_devices()
+sd.default.channels = 2 #To check the device channels: sd.query_devices()[id]['max_input_channel']
 
 #Global variables
 mute = False
@@ -27,7 +28,7 @@ y = []
 sr = 44100
 recording_thread = None
 recording_started = False
-decibels_L,decibels_R = 0,0
+decibels_L,decibels_R = -60,-60
 
 #NOTE: 'y' represents the audio file data, 'sr' is the sample rate of y
 
@@ -73,7 +74,7 @@ def stop_audio():
     sd.stop()
 
 def rms_to_db(rms):
-    return 20 * np.log10(rms) if rms > 0 else -np.inf
+    return 20 * np.log10(rms) if rms > 0 else -60
 
 def record_callback(indata, frames, time, status):
     """Callback function for recording audio."""
@@ -87,9 +88,14 @@ def record_callback(indata, frames, time, status):
         decibels_L = rms_to_db(rms_L)
         rms_R = np.sqrt(np.mean(indata[:,1]**2))
         decibels_R = rms_to_db(rms_R)
+        #Code below is for debugging purposes
+        #decibels_L = random.randint(-60,0)
+        #decibels_R = random.randint(-60,0)
+        #print(decibels_L,decibels_R)
     else:
         # Append zeros instead of actual audio to keep the buffer length consistent
         y.append(np.zeros_like(indata))
+        decibels_L,decibels_R=-60,-60
 
 def record_audio(callback=None):
     global mic_pressed, recording_started, y, recording_thread, decibels_L, decibels_R
@@ -110,18 +116,17 @@ def record_audio(callback=None):
 
         recording_thread = threading.Thread(target=start_stream)
         recording_thread.start()
-
     else:
         # Stop recording
         recording_started = False
         mic_pressed = False
-        decibels_L,decibels_R=0,0
         stop_audio()
 
         # Wait for the recording thread to finish, if it exists
         if recording_thread is not None:
             recording_thread.join()
             recording_thread = None  # Reset the thread variable
+            decibels_L,decibels_R=-60,-60
 
         # Save the recording
         if y:
@@ -131,6 +136,9 @@ def record_audio(callback=None):
 
         if callback:
             callback()
+
+def get_decibels():
+    return decibels_L, decibels_R
 
 def closest_pitch(f0):
     midi_note = np.around(librosa.hz_to_midi(f0))

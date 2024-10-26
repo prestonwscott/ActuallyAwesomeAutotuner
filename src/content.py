@@ -37,7 +37,7 @@ class Content(tk.Frame):
         button_microphone = create_button(frame_body, 250, 550, "light grey", "", "Microphone toggle", "assets/microphone.png")
         button_microphone.grid(column=1, row=0, padx=32, pady=16)
 
-        panel_reader = create_panel(frame_body, 100, 550, "white", "assets/decibelbar.png")
+        panel_reader = create_panel(frame_body, 100, 550, "white", "assets/decibelbar.png", True)
         panel_reader.grid(column=2, row=0)
         frame_body.grid(column=0, row=0)
 

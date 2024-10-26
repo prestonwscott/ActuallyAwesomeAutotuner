@@ -61,6 +61,29 @@ class MainApp:
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.dynamic_canvas = get_dynamic_canvas() #Canvas that will be updated every 100 ms
+        self.meters = get_meters()
+        self.update_DBmeter()
+
+    # The dynamic updates must be initialized
+    def update_DBmeter(self):
+        if self.meters:
+            for m in self.meters:
+                self.dynamic_canvas.delete(m)
+            self.meters = []
+        max_height = 533
+        decibels_L,decibels_R = get_decibels()
+        height_L = (max_height * (abs(decibels_L)/60))
+        height_R = (max_height * (abs(decibels_R)/60))
+
+        left_meter = self.dynamic_canvas.create_rectangle(10, height_L, 34, max_height, fill='light green', outline='')
+        right_meter = self.dynamic_canvas.create_rectangle(38, height_R, 62, max_height, fill='light green', outline='')
+        self.meters.append(left_meter)
+        self.meters.append(right_meter)
+        self.root.after(100, self.update_DBmeter)
+    
+        pass
+
 
 if __name__ == "__main__":
     # Initialize the window

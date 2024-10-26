@@ -1,6 +1,8 @@
 import tkinter as tk
 from .utils import *
 
+meters = []
+
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
     r = int(r * factor) // 256
@@ -30,9 +32,7 @@ def on_leave(parent, shapes, factor):
         else:    
             new_color = darken_color(parent, current_color, 1/factor)
             parent.itemconfig(shape, fill=new_color)
-    
-def update_DBmeter(parent):
-    pass
+
 
 def create_rounded_rect(parent, x, y, width, height, color):
     radius = 10
@@ -56,7 +56,8 @@ def create_rounded_rect(parent, x, y, width, height, color):
     shapes.append(parent.create_rectangle(x, y + radius, x + width, y + height - radius, fill=color, outline=""))
     return shapes
 
-def create_panel(parent, width, height, color, icon_path):
+def create_panel(parent, width, height, color, icon_path, include_meter=False):
+    global dynamic_canvas,meters
     frame = tk.Frame(parent)
     canvas = tk.Canvas(frame, width=width, height=height, highlightthickness=0)
     create_rounded_rect(canvas, 0, 0, width, height, color)
@@ -64,9 +65,21 @@ def create_panel(parent, width, height, color, icon_path):
         icon_photo = tk.PhotoImage(file=icon_path)
         canvas.create_image(width / 2, height / 2, image=icon_photo)
         canvas.image = icon_photo
-
+    
+    if include_meter==True:
+        left_meter = canvas.create_rectangle(10, height-17, 34, height-17, fill='light green', outline='')
+        right_meter = canvas.create_rectangle(38, height-17, 62, height-17, fill='light green', outline='')
+        meters.append(left_meter)
+        meters.append(right_meter)
+        dynamic_canvas = canvas
     canvas.pack()
     return frame
+
+def get_dynamic_canvas():
+    return dynamic_canvas
+
+def get_meters():
+    return meters
 
 def create_button(parent, width, height, color, bgcolor, id, icon_path, factor=0.7):
     if len(bgcolor) == 0:
