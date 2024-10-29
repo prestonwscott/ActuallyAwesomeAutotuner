@@ -1,27 +1,7 @@
 import tkinter as tk
 from .utils import *
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-from .audiofunctions import *
-=======
-=======
->>>>>>> Stashed changes
-import sounddevice as sd
-from tkinter import StringVar, Label, OptionMenu
 
 meters = []
->>>>>>> Stashed changes
-
-# List audio devices
-devices = sd.query_devices()
-input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
-output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
-
-# List audio devices
-devices = sd.query_devices()
-input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
-output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
-
 
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
@@ -33,8 +13,10 @@ def darken_color(parent, color, factor):
 def on_click(parent, id):
     print(id)
     if(id == "Microphone toggle"):
-        record_audio()
-        autotune()
+        record_audio(autotune)
+        
+    if(id == "Mute toggle"):
+        mute_audio()
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:
@@ -50,6 +32,7 @@ def on_leave(parent, shapes, factor):
         else:    
             new_color = darken_color(parent, current_color, 1/factor)
             parent.itemconfig(shape, fill=new_color)
+
 
 def create_rounded_rect(parent, x, y, width, height, color):
     radius = 10
@@ -73,7 +56,8 @@ def create_rounded_rect(parent, x, y, width, height, color):
     shapes.append(parent.create_rectangle(x, y + radius, x + width, y + height - radius, fill=color, outline=""))
     return shapes
 
-def create_panel(parent, width, height, color, icon_path):
+def create_panel(parent, width, height, color, icon_path, include_meter=False):
+    global dynamic_canvas,meters
     frame = tk.Frame(parent)
     canvas = tk.Canvas(frame, width=width, height=height, highlightthickness=0)
     create_rounded_rect(canvas, 0, 0, width, height, color)
@@ -81,9 +65,21 @@ def create_panel(parent, width, height, color, icon_path):
         icon_photo = tk.PhotoImage(file=icon_path)
         canvas.create_image(width / 2, height / 2, image=icon_photo)
         canvas.image = icon_photo
-
+    
+    if include_meter==True:
+        left_meter = canvas.create_rectangle(10, height-17, 34, height-17, fill='light green', outline='')
+        right_meter = canvas.create_rectangle(38, height-17, 62, height-17, fill='light green', outline='')
+        meters.append(left_meter)
+        meters.append(right_meter)
+        dynamic_canvas = canvas
     canvas.pack()
     return frame
+
+def get_dynamic_canvas():
+    return dynamic_canvas
+
+def get_meters():
+    return meters
 
 def create_button(parent, width, height, color, bgcolor, id, icon_path, factor=0.7):
     if len(bgcolor) == 0:
@@ -142,48 +138,3 @@ def create_textbox(parent, width, height, label_txt, default, color):
     canvas.create_window(36, 36, window=input_box)
     canvas.pack()
     return canvas
-<<<<<<< Updated upstream
-
-=======
-    
->>>>>>> Stashed changes
-def create_device_config_menu(parent, width, height):
-    frame = tk.Frame(parent, bg="white")
-    
-    # Label for input device
-    input_label = Label(frame, text="Select Input Device:", font=("Default", 10, "bold"), bg="white")
-    input_label.pack(pady=(10, 0))
-    
-    # Dropdown for input devices
-    input_device_var = StringVar()
-    input_device_var.set(input_devices[0] if input_devices else "No input device found")
-    input_device_dropdown = OptionMenu(frame, input_device_var, *input_devices)
-    input_device_dropdown.config(width=width // 10)
-    input_device_dropdown.pack(pady=5)
-    
-    # Label for output device
-    output_label = Label(frame, text="Select Output Device:", font=("Default", 10, "bold"), bg="white")
-    output_label.pack(pady=(10, 0))
-    
-    # Dropdown for output devices
-    output_device_var = StringVar()
-    output_device_var.set(output_devices[0] if output_devices else "No output device found")
-    output_device_dropdown = OptionMenu(frame, output_device_var, *output_devices)
-    output_device_dropdown.config(width=width // 10)
-    output_device_dropdown.pack(pady=5)
-    
-    # Save button
-    def save_device_selection():
-        selected_input_device = input_device_var.get()
-        selected_output_device = output_device_var.get()
-        print(f"Selected Input Device: {selected_input_device}")
-        print(f"Selected Output Device: {selected_output_device}")
-        # Save these selections as per program requirements
-
-    save_button = tk.Button(frame, text="Save Selection", command=save_device_selection)
-    save_button.pack(pady=10)
-    
-    frame.pack_propagate(False)
-    frame.config(width=width, height=height)
-    frame.pack()
-    return frame
