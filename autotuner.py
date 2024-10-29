@@ -86,7 +86,7 @@ class MainApp:
         self.root.after(100, self.update_DBmeter)
     
         pass
-        
+
     def create_device_config_menu(self, parent, width, height):
         lib.create_device_config_menu(parent, width, height)
         

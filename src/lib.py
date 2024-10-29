@@ -10,6 +10,8 @@ devices = sd.query_devices()
 input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
 output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
 
+meters = []
+
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
     r = int(r * factor) // 256
