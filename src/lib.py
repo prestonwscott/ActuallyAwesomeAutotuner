@@ -1,8 +1,11 @@
 import tkinter as tk
 from .utils import *
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from .audiofunctions import *
 =======
+=======
+>>>>>>> Stashed changes
 import sounddevice as sd
 from tkinter import StringVar, Label, OptionMenu
 
@@ -13,6 +16,12 @@ meters = []
 devices = sd.query_devices()
 input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
 output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
+
+# List audio devices
+devices = sd.query_devices()
+input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
+output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
+
 
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
@@ -133,7 +142,11 @@ def create_textbox(parent, width, height, label_txt, default, color):
     canvas.create_window(36, 36, window=input_box)
     canvas.pack()
     return canvas
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
 def create_device_config_menu(parent, width, height):
     frame = tk.Frame(parent, bg="white")
     

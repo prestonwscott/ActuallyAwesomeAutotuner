@@ -47,19 +47,21 @@ class MainApp:
         #right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # Create the notebook in the right frame
-        notebook = ttk.Notebook(right_frame)
-        notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.notebook = ttk.Notebook(right_frame)
+        self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Create the effects and devices tabs
-        effects_tab = ttk.Frame(notebook)
-        notebook.add(effects_tab, text="Effects")
+        self.effects_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.effects_tab, text="Effects")
 
-        devices_tab = ttk.Frame(notebook)
-        notebook.add(devices_tab, text="Devices")
+        self.devices_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.devices_tab, text="Devices")
 
         # Add example content to the tabs to make them visible
-        tk.Label(effects_tab, text="This is the Effects tab").pack()
-        tk.Label(devices_tab, text="This is the Devices tab").pack()
+        tk.Label(self.effects_tab, text="This is the Effects tab").pack()
+        tk.Label(self.devices_tab, text="This is the Devices tab").pack()
+
+        self.create_device_config_menu(self.devices_tab, width=300, height=200)
 
         self.create_device_config_menu(devices_tab, width=300, height=200)
 
@@ -96,6 +98,10 @@ class MainApp:
     def open_device_config(self):
         self.notebook.select(self.devices_tab)
         print("Device Configuration Selected")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+
 >>>>>>> Stashed changes
 
 if __name__ == "__main__":
