@@ -23,7 +23,7 @@ class MainApp:
 
         # Create a Help menu
         help_menu = tk.Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="Device Configuration")
+        help_menu.add_command(label="Device Configuration", command=self.open_device_config)
         help_menu.add_command(label="Using the autotuner")
         help_menu.add_command(label="Saving recordings")
         help_menu.add_command(label="About")
@@ -61,9 +61,42 @@ class MainApp:
         tk.Label(effects_tab, text="This is the Effects tab").pack()
         tk.Label(devices_tab, text="This is the Devices tab").pack()
 
+        self.create_device_config_menu(devices_tab, width=300, height=200)
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+<<<<<<< Updated upstream
+=======
+        self.dynamic_canvas = get_dynamic_canvas() #Canvas that will be updated every 100 ms
+        self.meters = get_meters()
+        self.update_DBmeter()
+
+    # The dynamic updates must be initialized
+    def update_DBmeter(self):
+        if self.meters:
+            for m in self.meters:
+                self.dynamic_canvas.delete(m)
+            self.meters = []
+        max_height = 533
+        decibels_L,decibels_R = get_decibels()
+        height_L = (max_height * (abs(decibels_L)/60))
+        height_R = (max_height * (abs(decibels_R)/60))
+
+        left_meter = self.dynamic_canvas.create_rectangle(10, height_L, 34, max_height, fill='light green', outline='')
+        right_meter = self.dynamic_canvas.create_rectangle(38, height_R, 62, max_height, fill='light green', outline='')
+        self.meters.append(left_meter)
+        self.meters.append(right_meter)
+        self.root.after(100, self.update_DBmeter)
+    
+        pass
+        
+    def create_device_config_menu(self, parent, width, height):
+        lib.create_device_config_menu(parent, width, height)
+        
+    def open_device_config(self):
+        self.notebook.select(self.devices_tab)
+        print("Device Configuration Selected")
+>>>>>>> Stashed changes
 
 if __name__ == "__main__":
     # Initialize the window
