@@ -27,6 +27,12 @@ def on_click(parent=None, id="None", tkVar=0):
 
     if(id=="Shift pitch"):
         shift_pitch(tkVar)
+    
+    if(id=="Add compression"):
+        add_compression(tkVar)
+
+    if(id=="Add distortion"):
+        add_distortion(tkVar)
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:
