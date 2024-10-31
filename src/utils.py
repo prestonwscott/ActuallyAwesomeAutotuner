@@ -8,6 +8,7 @@ import psola
 from functools import partial
 import threading
 import random
+from scipy.signal import convolve
 #After recording a snippet, audio will be saved to a file in 'ActuallyAwesomeAutotuner/raw.wav'
 #This file may then be autotuned and saved under 'ActuallyAwesomeAutotuner/tuned.wav'
 #If tuning is on, then 'tuned.wav' is loaded in memory for playback, o/w 'raw.wav' will be.
@@ -145,6 +146,33 @@ def closest_pitch(f0):
     nan_indices = np.isnan(f0)
     midi_note[nan_indices] = np.nan
     return librosa.midi_to_hz(midi_note)
+
+def shift_pitch(n_steps):
+    if n_steps!=0:
+        y, sr = librosa.load("tuned.wav", sr=None, mono=True)
+        shift_y = librosa.effects.pitch_shift(y, sr=sr, n_steps=n_steps)
+        sf.write('fx.wav', shift_y, sr)
+
+def add_reverb(decay_time):
+    if decay_time>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+
+        impulse = np.exp(-np.arange(0, sr * decay_time) / (sr * decay_time))
+        y_reverb = convolve(y, impulse)
+        y_reverb /= np.max(np.abs(y_reverb))
+        sf.write('fx.wav', y_reverb, sr)
+        print("Added reverb")
+    pass
+
+def add_delay(delay_seconds):
+    if delay_seconds>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+        delay_samples = int(delay_seconds * sr)
+        y_delay = np.zeros(delay_samples)
+        y_delay = y_delay.astype(int)
+        np.concatenate((y_delay, y))
+        sf.write('fx.wav', y_delay, sr)
+        print("Added delay")
 
 def autotune(_=None):
     y, sr = librosa.load("raw.wav", sr=None, mono=True)

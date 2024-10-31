@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from .lib import *
 
 class Content(tk.Frame):
@@ -75,5 +76,41 @@ class Content(tk.Frame):
         label_progress.pack()
         frame_progress.place(x=340, y=120)
         frame_footer.grid(column=0, row=1)
+
+class Effect(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        frame_body = ttk.Frame(self)
+
+        decay = tk.DoubleVar(value=0)
+        reverb_label = tk.Label(frame_body, text="Reverb",  font=("Default", 14, "bold"))
+        reverb_label.grid(column=1,row=0)
+        reverb_decay = tk.Label(frame_body, text="Decay (in s)", font=("Default", 12, "bold"))
+        reverb_decay.grid(column=0, row=2)
+        reverb_entry = tk.Entry(frame_body, width=3, textvariable=decay, font=("Default", 12))
+        reverb_entry.grid(column=1,row=2, pady=15)
+        reverb_button = tk.Button(frame_body, text="Add Reverb", command=lambda: on_click(id="Add reverb", tkVar=decay.get()))
+        reverb_button.grid(column=2,row=2)
+
+        delay = tk.IntVar(value=0)
+        delay_label = tk.Label(frame_body, text="Delay (in ms)", font=("Default", 14, "bold"))
+        delay_label.grid(column=1, row=3)
+        delay_entry = tk.Entry(frame_body, width=3, textvariable=delay, font=("Default", 12))
+        delay_entry.grid(column=1, row=4, pady=15)
+        delay_button = tk.Button(frame_body, text="Add Delay", command=lambda: on_click(id="Add delay", tkVar=delay.get()))
+        delay_button.grid(column=2, row=4)
+
+        pitch = tk.IntVar(value=0)
+        pitch_label = tk.Label(frame_body, text="Pitch", font=("Default", 14, "bold"))
+        pitch_label.grid(column=1, row=5)
+        pitch_steps = tk.Label(frame_body, text="Steps", font=("Default", 14, "bold"))
+        pitch_steps.grid(column=0, row=6)
+        pitch_entry = tk.Entry(frame_body, width=3, textvariable=pitch, font=("Default", 12))
+        pitch_entry.grid(column=1, row=6, pady=15)
+        pitch_button = tk.Button(frame_body, text="Shift Pitch", command=lambda: on_click(id="Shift pitch", tkVar=pitch.get()))
+        pitch_button.grid(column=2, row=6)
+
+        frame_body.grid(row=0,column=0)
 
 #root.mainloop()
