@@ -19,13 +19,29 @@ def darken_color(parent, color, factor):
     b = int(b * factor) // 256
     return f'#{r:02x}{g:02x}{b:02x}'
 
-def on_click(parent, id):
+def on_click(parent=None, id="None", tkVar=0):
     print(id)
     if(id == "Microphone toggle"):
         record_audio(autotune)
         
     if(id == "Mute toggle"):
         mute_audio()
+    
+    if(id == "Add reverb"):
+        print(tkVar)
+        add_reverb(tkVar)
+    
+    if(id=="Add delay"):
+        add_delay(tkVar)
+
+    if(id=="Shift pitch"):
+        shift_pitch(tkVar)
+    
+    if(id=="Add compression"):
+        add_compression(tkVar)
+
+    if(id=="Add distortion"):
+        add_distortion(tkVar)
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:

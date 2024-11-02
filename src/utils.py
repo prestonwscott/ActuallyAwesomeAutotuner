@@ -8,6 +8,7 @@ import psola
 from functools import partial
 import threading
 import random
+from pedalboard import Pedalboard, Reverb, Delay, Compressor, Distortion
 #After recording a snippet, audio will be saved to a file in 'ActuallyAwesomeAutotuner/raw.wav'
 #This file may then be autotuned and saved under 'ActuallyAwesomeAutotuner/tuned.wav'
 #If tuning is on, then 'tuned.wav' is loaded in memory for playback, o/w 'raw.wav' will be.
@@ -145,6 +146,45 @@ def closest_pitch(f0):
     nan_indices = np.isnan(f0)
     midi_note[nan_indices] = np.nan
     return librosa.midi_to_hz(midi_note)
+
+def shift_pitch(n_steps):
+    if n_steps!=0:
+        y, sr = librosa.load("tuned.wav", sr=None, mono=True)
+        shift_y = librosa.effects.pitch_shift(y, sr=sr, n_steps=n_steps)
+        sf.write('fx.wav', shift_y, sr)
+
+def add_reverb(room_size):
+    if room_size>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+        board = Pedalboard([Reverb(room_size=room_size)])
+        y_reverb = board(y, sr)
+        sf.write('fx.wav', y_reverb, sr)
+        print("Added reverb")
+    pass
+
+def add_delay(delay_seconds):
+    if delay_seconds>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+        board = Pedalboard([Delay(delay_seconds=delay_seconds)])
+        y_delay = board(y, sr)
+        sf.write('fx.wav', y_delay, sr)
+        print("Added delay")
+
+def add_compression(threshold):
+    if threshold>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+        board = Pedalboard([Compressor(threshold_db=threshold)])
+        y_compress = board(y, sr)
+        sf.write('fx.wav', y_compress, sr)
+        print("Audio compressed")
+
+def add_distortion(drive):
+    if drive>0:
+        y,sr = librosa.load("tuned.wav", sr=None, mono=True)
+        board = Pedalboard([Distortion(drive_db=drive)])
+        y_distort = board(y, sr)
+        sf.write('fx.wav', y_distort, sr)
+        print("Added distortion")
 
 def autotune(_=None):
     y, sr = librosa.load("raw.wav", sr=None, mono=True)
