@@ -50,6 +50,8 @@ class MainApp:
         # Create the effects and devices tabs
         effects_tab = ttk.Frame(notebook)
         notebook.add(effects_tab, text="Effects")
+        effects = Effect(effects_tab)
+        effects.pack()
 
         devices_tab = ttk.Frame(notebook)
         notebook.add(devices_tab, text="Devices")
