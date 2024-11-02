@@ -203,5 +203,3 @@ def autotune(_=None):
     corrected_f0 = closest_pitch(f0)
     tuned_y = psola.vocode(y, sample_rate=int(sr), target_pitch=corrected_f0, fmin=fmin, fmax=fmax)
     sf.write("tuned.wav", tuned_y, sr)
-
-

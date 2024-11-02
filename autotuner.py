@@ -22,7 +22,7 @@ class MainApp:
 
         # Create a Help menu
         help_menu = tk.Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="Device Configuration")
+        help_menu.add_command(label="Device Configuration", command=self.open_device_config)
         help_menu.add_command(label="Using the autotuner")
         help_menu.add_command(label="Saving recordings")
         help_menu.add_command(label="About")
@@ -44,8 +44,8 @@ class MainApp:
         right_frame = tk.Frame(main_frame, bg='light green')
 
         # Create the notebook in the right frame
-        notebook = ttk.Notebook(right_frame)
-        notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.notebook = ttk.Notebook(right_frame)
+        self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Create the effects and devices tabs
         effects_tab = ttk.Frame(notebook)
@@ -53,12 +53,15 @@ class MainApp:
         effects = Effect(effects_tab)
         effects.pack()
 
-        devices_tab = ttk.Frame(notebook)
-        notebook.add(devices_tab, text="Devices")
+        self.devices_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.devices_tab, text="Devices")
 
         # Add example content to the tabs to make them visible
-        tk.Label(effects_tab, text="This is the Effects tab").pack()
-        tk.Label(devices_tab, text="This is the Devices tab").pack()
+        tk.Label(self.effects_tab, text="This is the Effects tab").pack()
+        tk.Label(self.devices_tab, text="This is the Devices tab").pack()
+        
+        # Display Input and Output device options
+        self.create_device_config_menu(self.devices_tab, width=300, height=200)
 
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -86,6 +89,12 @@ class MainApp:
     
         pass
 
+    def create_device_config_menu(self, parent, width, height):
+        lib.create_device_config_menu(parent, width, height)
+        
+    def open_device_config(self):
+        self.notebook.select(self.devices_tab)
+        print("Device Configuration Selected")
 
 if __name__ == "__main__":
     # Initialize the window

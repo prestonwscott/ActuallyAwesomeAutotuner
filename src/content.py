@@ -6,7 +6,6 @@ class Content(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        #root = tk.Tk()
         frame_body = tk.Frame(self)
         frame_config = tk.Frame(frame_body)
         panel_tune = create_panel(frame_config, 100, 216, "white", "")
@@ -134,5 +133,3 @@ class Effect(ttk.Frame):
         distortion_button.grid(column=2, row=10)
 
         frame_body.grid(row=0,column=0)
-
-#root.mainloop()
