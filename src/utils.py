@@ -30,6 +30,7 @@ recording_thread = None
 recording_started = False
 decibels_L,decibels_R = -60,-60
 devices = sd.query_devices()
+all_devices = [device['name'] for device in devices]
 input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
 output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
 meters = []

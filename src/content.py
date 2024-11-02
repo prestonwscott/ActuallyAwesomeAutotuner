@@ -160,7 +160,7 @@ class Devices(tk.Frame):
         output_device_dropdown.pack(pady=5)
         
         def save_device_selection():
-            sd.default.device = (input_devices.index(input_device_var.get()), output_devices.index(output_device_var.get()))
+            sd.default.device = (all_devices.index(input_device_var.get()), all_devices.index(output_device_var.get()))
 
         save_button = tk.Button(frame, text="Save Selection", command=save_device_selection)
         save_button.pack(pady=10)
