@@ -1,11 +1,11 @@
 import tkinter as tk
+from tkinter import ttk
 from .lib import *
 
 class Content(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        #root = tk.Tk()
         frame_body = tk.Frame(self)
         frame_config = tk.Frame(frame_body)
         panel_tune = create_panel(frame_config, 100, 216, "white", "")
@@ -76,4 +76,60 @@ class Content(tk.Frame):
         frame_progress.place(x=340, y=120)
         frame_footer.grid(column=0, row=1)
 
-#root.mainloop()
+class Effect(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        frame_body = ttk.Frame(self)
+
+        room_size = tk.DoubleVar(value=0)
+        reverb_label = tk.Label(frame_body, text="Reverb",  font=("Default", 14, "bold"))
+        reverb_label.grid(column=1,row=0)
+        reverb_size = tk.Label(frame_body, text="Room size", font=("Default", 12, "bold"))
+        reverb_size.grid(column=0, row=2)
+        reverb_entry = tk.Entry(frame_body, width=3, textvariable=room_size, font=("Default", 12))
+        reverb_entry.grid(column=1,row=2, pady=15)
+        reverb_button = tk.Button(frame_body, text="Add Reverb", command=lambda: on_click(id="Add reverb", tkVar=room_size.get()))
+        reverb_button.grid(column=2,row=2)
+
+        delay = tk.IntVar(value=0)
+        delay_label = tk.Label(frame_body, text="Delay", font=("Default", 14, "bold"))
+        delay_label.grid(column=1, row=3)
+        delay_seconds = tk.Label(frame_body, text="Delay (in s)", font=("Default", 14, "bold"))
+        delay_seconds.grid(column=0, row=4)
+        delay_entry = tk.Entry(frame_body, width=3, textvariable=delay, font=("Default", 12))
+        delay_entry.grid(column=1, row=4, pady=15)
+        delay_button = tk.Button(frame_body, text="Add Delay", command=lambda: on_click(id="Add delay", tkVar=delay.get()))
+        delay_button.grid(column=2, row=4)
+
+        pitch = tk.IntVar(value=0)
+        pitch_label = tk.Label(frame_body, text="Pitch", font=("Default", 14, "bold"))
+        pitch_label.grid(column=1, row=5)
+        pitch_steps = tk.Label(frame_body, text="Steps", font=("Default", 14, "bold"))
+        pitch_steps.grid(column=0, row=6)
+        pitch_entry = tk.Entry(frame_body, width=3, textvariable=pitch, font=("Default", 12))
+        pitch_entry.grid(column=1, row=6, pady=15)
+        pitch_button = tk.Button(frame_body, text="Shift Pitch", command=lambda: on_click(id="Shift pitch", tkVar=pitch.get()))
+        pitch_button.grid(column=2, row=6)
+
+        th = tk.DoubleVar(value=0)
+        compressor_label = tk.Label(frame_body, text="Compressor", font=("Default", 14, "bold"))
+        compressor_label.grid(column=1, row=7)
+        compressor_th = tk.Label(frame_body, text="Thresehold (dB)", font=("Default", 14, "bold"))
+        compressor_th.grid(column=0, row=8)
+        compressor_entry = tk.Entry(frame_body, textvariable=th, width=3, font=("Default", 12))
+        compressor_entry.grid(column=1, row=8, pady=15)
+        compressor_button = tk.Button(frame_body, text="Compress Audio", command=lambda: on_click(id="Add compression", tkVar=th.get()))
+        compressor_button.grid(column=2, row=8)
+
+        drive_db = tk.DoubleVar(value=0)
+        distortion_label = tk.Label(frame_body, text="Distortion", font=("Default", 14, "bold"))
+        distortion_label.grid(column=1, row=9)
+        distortion_drive = tk.Label(frame_body, text="Drive (dB)", font=("Default", 14, "bold"))
+        distortion_drive.grid(column=0, row=10)
+        distortion_entry = tk.Entry(frame_body, textvariable=drive_db, width=3, font=("Default", 12))
+        distortion_entry.grid(column=1, row=10)
+        distortion_button = tk.Button(frame_body, text="Add Distortion", command=lambda: on_click(id="Add distortion", tkVar=drive_db.get()))
+        distortion_button.grid(column=2, row=10)
+
+        frame_body.grid(row=0,column=0)
