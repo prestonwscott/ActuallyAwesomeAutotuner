@@ -88,15 +88,20 @@ def record_callback(indata, frames, time, status):
         print(status)
     if not mute:  # Check if mute is off before appending data
         y.append(indata.copy())
-        # Get the left channel and right channel deciebels respectively
-        rms_L = np.sqrt(np.mean(indata[:,0]**2))
-        decibels_L = rms_to_db(rms_L)
-        rms_R = np.sqrt(np.mean(indata[:,1]**2))
-        decibels_R = rms_to_db(rms_R)
-        #Code below is for debugging purposes
-        #decibels_L = random.randint(-60,0)
-        #decibels_R = random.randint(-60,0)
-        #print(decibels_L,decibels_R)
+
+        if indata.shape[1] > 1:
+            # Stereo: Process both left and right channels
+            rms_L = np.sqrt(np.mean(indata[:, 0]**2))
+            decibels_L = rms_to_db(rms_L)
+            rms_R = np.sqrt(np.mean(indata[:, 1]**2))
+            decibels_R = rms_to_db(rms_R)
+        else:
+            # Mono: Use the same channel for both left and right
+            rms_L = np.sqrt(np.mean(indata[:, 0]**2))
+            decibels_L = rms_to_db(rms_L)
+            rms_R = np.sqrt(np.mean(indata[:, 0]**2))
+            decibels_R = decibels_L
+
     else:
         # Append zeros instead of actual audio to keep the buffer length consistent
         y.append(np.zeros_like(indata))
