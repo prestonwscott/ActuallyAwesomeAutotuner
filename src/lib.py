@@ -100,7 +100,7 @@ def create_dial(parent, size, label_txt, subtitle_txt, default, min, max):
     canvas = tk.Canvas(parent, width=size, height=size*(3/2), bg="white", highlightthickness=0)
     label = tk.Label(canvas, text=label_txt, fg="black", font=("Default", 8, "bold"), bg="white")
     subtitle_txt = subtitle_txt.replace("<n>", str(default))
-    subtitle = tk.Label(canvas, text=subtitle_txt, font=("Default", 8), bg="white")
+    subtitle = tk.Label(canvas, text=subtitle_txt, fg="black", font=("Default", 8), bg="white")
     icon_photo = tk.PhotoImage(file="assets/dial.png")
     canvas.image = icon_photo
     
