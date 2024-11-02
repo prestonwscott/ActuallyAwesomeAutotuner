@@ -39,30 +39,23 @@ class MainApp:
         left_frame = tk.Frame(main_frame)
         content = Content(left_frame)
         content.pack(padx=60, pady=60)
-
-        # Right frame
-        right_frame = tk.Frame(main_frame, bg='light green')
-
+        
         # Create the notebook in the right frame
+        right_frame = tk.Frame(main_frame)
         self.notebook = ttk.Notebook(right_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Create the effects and devices tabs
-        effects_tab = ttk.Frame(notebook)
-        notebook.add(effects_tab, text="Effects")
-        effects = Effect(effects_tab)
+        self.effects_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.effects_tab, text="Effects")
+        effects = Effect(self.effects_tab)
         effects.pack()
 
         self.devices_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.devices_tab, text="Devices")
-
-        # Add example content to the tabs to make them visible
-        tk.Label(self.effects_tab, text="This is the Effects tab").pack()
-        tk.Label(self.devices_tab, text="This is the Devices tab").pack()
         
         # Display Input and Output device options
         self.create_device_config_menu(self.devices_tab, width=300, height=200)
-
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
