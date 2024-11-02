@@ -3,15 +3,6 @@ from .utils import *
 import sounddevice as sd
 from tkinter import StringVar, Label, OptionMenu
 
-meters = []
-
-# List audio devices
-devices = sd.query_devices()
-input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
-output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
-
-meters = []
-
 def darken_color(parent, color, factor):
     r, g, b = parent.winfo_rgb(color)
     r = int(r * factor) // 256
@@ -20,12 +11,41 @@ def darken_color(parent, color, factor):
     return f'#{r:02x}{g:02x}{b:02x}'
 
 def on_click(parent=None, id="None", tkVar=0):
-    print(id)
+    if(id == "Tuner toggle"):
+        print("")
+    
+    if(id == "Metronome toggle"):
+        print("")
+
+    if(id == "Speed toggle"):
+        print("")
+
     if(id == "Microphone toggle"):
         record_audio(autotune)
-        
+
     if(id == "Mute toggle"):
         mute_audio()
+
+    if(id == "Skip back"):
+        print("")
+    
+    if(id == "Rewind"):
+        print("")
+
+    if(id == "Play"):
+        print("")
+
+    if(id == "Fast forward"):
+        print("")
+        
+    if(id == "Skip forward"):
+        print("")
+    
+    if(id == "Extend file"):
+        print("")
+
+    if(id == "Volume mute toggle"):
+        print("")
     
     if(id == "Add reverb"):
         print(tkVar)
@@ -163,44 +183,3 @@ def create_textbox(parent, width, height, label_txt, default, color):
     canvas.create_window(36, 36, window=input_box)
     canvas.pack()
     return canvas
-    
-def create_device_config_menu(parent, width, height):
-    frame = tk.Frame(parent, bg="white")
-    
-    # Label for input device
-    input_label = Label(frame, text="Select Input Device:", font=("Default", 10, "bold"), bg="white")
-    input_label.pack(pady=(10, 0))
-    
-    # Dropdown for input devices
-    input_device_var = StringVar()
-    input_device_var.set(input_devices[0] if input_devices else "No input device found")
-    input_device_dropdown = OptionMenu(frame, input_device_var, *input_devices)
-    input_device_dropdown.config(width=width // 10)
-    input_device_dropdown.pack(pady=5)
-    
-    # Label for output device
-    output_label = Label(frame, text="Select Output Device:", font=("Default", 10, "bold"), bg="white")
-    output_label.pack(pady=(10, 0))
-    
-    # Dropdown for output devices
-    output_device_var = StringVar()
-    output_device_var.set(output_devices[0] if output_devices else "No output device found")
-    output_device_dropdown = OptionMenu(frame, output_device_var, *output_devices)
-    output_device_dropdown.config(width=width // 10)
-    output_device_dropdown.pack(pady=5)
-    
-    # Save button
-    def save_device_selection():
-        selected_input_device = input_device_var.get()
-        selected_output_device = output_device_var.get()
-        print(f"Selected Input Device: {selected_input_device}")
-        print(f"Selected Output Device: {selected_output_device}")
-        # Save these selections as per program requirements
-
-    save_button = tk.Button(frame, text="Save Selection", command=save_device_selection)
-    save_button.pack(pady=10)
-    
-    frame.pack_propagate(False)
-    frame.config(width=width, height=height)
-    frame.pack()
-    return frame

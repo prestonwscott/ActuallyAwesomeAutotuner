@@ -5,9 +5,9 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 import psola
-from functools import partial
 import threading
 import random
+from functools import partial
 from pedalboard import Pedalboard, Reverb, Delay, Compressor, Distortion
 #After recording a snippet, audio will be saved to a file in 'ActuallyAwesomeAutotuner/raw.wav'
 #This file may then be autotuned and saved under 'ActuallyAwesomeAutotuner/tuned.wav'
@@ -17,8 +17,7 @@ from pedalboard import Pedalboard, Reverb, Delay, Compressor, Distortion
 
 #Sound device defaults
 sd.default.samplerate = 44100
-sd.default.device = 8 #Device is id-based; check for devices by calling the function sd.query_devices()
-sd.default.channels = 2 #To check the device channels: sd.query_devices()[id]['max_input_channel']
+sd.default.device = 0 #Device is id-based; check for devices by calling the function sd.query_devices()
 
 #Global variables
 mute = False
@@ -30,6 +29,10 @@ sr = 44100
 recording_thread = None
 recording_started = False
 decibels_L,decibels_R = -60,-60
+devices = sd.query_devices()
+input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
+output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
+meters = []
 
 #NOTE: 'y' represents the audio file data, 'sr' is the sample rate of y
 
@@ -106,12 +109,17 @@ def record_audio(callback=None):
         y = []  # Reset the recording buffer (for now)
         mic_pressed = True
         recording_started = True
+
+        device_info = sd.query_devices(sd.default.device[0], 'input')
+        num_channels = device_info['max_input_channels']
+        if num_channels == 0:
+            raise ValueError("No input channels available.")
         
         print("Recording... Press the button again to stop.")
 
         # Start the audio input stream in a separate thread
         def start_stream():
-            with sd.InputStream(callback=record_callback, channels=sd.default.channels, samplerate=sd.default.samplerate):
+            with sd.InputStream(callback=record_callback, channels=num_channels, samplerate=sd.default.samplerate):
                 while recording_started:
                     sd.sleep(100)  # Keep the stream open
 

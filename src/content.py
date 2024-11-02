@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 from .lib import *
 
 class Content(tk.Frame):
@@ -76,11 +75,11 @@ class Content(tk.Frame):
         frame_progress.place(x=340, y=120)
         frame_footer.grid(column=0, row=1)
 
-class Effect(ttk.Frame):
+class Effect(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        frame_body = ttk.Frame(self)
+        frame_body = tk.Frame(self)
 
         room_size = tk.DoubleVar(value=0)
         reverb_label = tk.Label(frame_body, text="Reverb",  font=("Default", 14, "bold"))
@@ -133,3 +132,39 @@ class Effect(ttk.Frame):
         distortion_button.grid(column=2, row=10)
 
         frame_body.grid(row=0,column=0)
+
+class Devices(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        width=300
+        height=200
+        frame = tk.Frame(parent, bg="white")
+    
+        input_label = Label(frame, text="Select Input Device:", font=("Default", 10, "bold"), bg="white")
+        input_label.pack(pady=(10, 0))
+        
+        input_device_var = StringVar()
+        input_device_var.set(input_devices[0] if input_devices else "No input device found")
+        input_device_dropdown = OptionMenu(frame, input_device_var, *input_devices)
+        input_device_dropdown.config(width=width // 10)
+        input_device_dropdown.pack(pady=5)
+        
+        output_label = Label(frame, text="Select Output Device:", font=("Default", 10, "bold"), bg="white")
+        output_label.pack(pady=(10, 0))
+        
+        output_device_var = StringVar()
+        output_device_var.set(output_devices[0] if output_devices else "No output device found")
+        output_device_dropdown = OptionMenu(frame, output_device_var, *output_devices)
+        output_device_dropdown.config(width=width // 10)
+        output_device_dropdown.pack(pady=5)
+        
+        def save_device_selection():
+            sd.default.device = (input_devices.index(input_device_var.get()), output_devices.index(output_device_var.get()))
+
+        save_button = tk.Button(frame, text="Save Selection", command=save_device_selection)
+        save_button.pack(pady=10)
+        
+        frame.pack_propagate(False)
+        frame.config(width=width, height=height)
+        frame.pack()

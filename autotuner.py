@@ -7,20 +7,15 @@ class MainApp:
     def __init__(self, root):
         self.root = root
         root.title("Autotuner")
-        # Set the window geometry
         root.resizable(width=True, height=True)
 
-        # Create a menu bar
         menu_bar = tk.Menu(root)
-
-        # Create a File menu
         file_menu = tk.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="New")
         file_menu.add_command(label="Open")
         file_menu.add_command(label="Save As...", command=utils.save_audio)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        # Create a Help menu
         help_menu = tk.Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Device Configuration", command=self.open_device_config)
         help_menu.add_command(label="Using the autotuner")
@@ -28,10 +23,8 @@ class MainApp:
         help_menu.add_command(label="About")
         menu_bar.add_cascade(label="Help", menu=help_menu)
 
-        # Configure the menu bar
         root.config(menu=menu_bar)
 
-        # Main frame to hold everything
         main_frame = tk.Frame(root)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -40,7 +33,7 @@ class MainApp:
         content = Content(left_frame)
         content.pack(padx=60, pady=60)
         
-        # Create the notebook in the right frame
+        # Right frame
         right_frame = tk.Frame(main_frame)
         self.notebook = ttk.Notebook(right_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -53,9 +46,8 @@ class MainApp:
 
         self.devices_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.devices_tab, text="Devices")
-        
-        # Display Input and Output device options
-        self.create_device_config_menu(self.devices_tab, width=300, height=200)
+        devices = Devices(self.devices_tab)
+        devices.pack()
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -81,9 +73,6 @@ class MainApp:
         self.root.after(100, self.update_DBmeter)
     
         pass
-
-    def create_device_config_menu(self, parent, width, height):
-        lib.create_device_config_menu(parent, width, height)
         
     def open_device_config(self):
         self.notebook.select(self.devices_tab)
