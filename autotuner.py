@@ -29,22 +29,24 @@ class MainApp:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Left frame
-        left_frame = tk.Frame(main_frame)
+        left_frame = tk.Frame(main_frame, bg=window_color)
         content = Content(left_frame)
         content.pack(padx=60, pady=60)
         
         # Right frame
-        right_frame = tk.Frame(main_frame)
-        self.notebook = ttk.Notebook(right_frame)
+        style = ttk.Style()
+        right_frame = tk.Frame(main_frame, bg=window_color)
+        style.configure("TNotebook", background=window_color)
+        style.configure("TNotebook.Tab", background=window_color, padding=[10, 5])
+        self.notebook = ttk.Notebook(right_frame, style="TNotebook")
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # Create the effects and devices tabs
-        self.effects_tab = ttk.Frame(self.notebook)
+        self.effects_tab = tk.Frame(self.notebook)
         self.notebook.add(self.effects_tab, text="Effects")
         effects = Effect(self.effects_tab)
         effects.pack()
 
-        self.devices_tab = ttk.Frame(self.notebook)
+        self.devices_tab = tk.Frame(self.notebook, bg=window_color)
         self.notebook.add(self.devices_tab, text="Devices")
         devices = Devices(self.devices_tab)
         devices.pack()

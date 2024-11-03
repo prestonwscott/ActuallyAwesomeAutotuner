@@ -15,14 +15,12 @@ from pedalboard import Pedalboard, Reverb, Delay, Compressor, Distortion
 #NOTE: Loading a saved recording will import it and tuned material cannot be toggled.
 #      'y' represents the numpy audio stream, 'sr' is the sample rate of y
 
-###Global variables###
 #Sound device defaults
 sd.default.samplerate = 44100
 sd.default.device = 0
 
 #Recording info
 mic_pressed = False
-is_playing = False
 y = None
 raw_y = None
 tuned_y = None
@@ -52,6 +50,13 @@ pitch = 0
 delay = 0
 compression = 0
 distortion = 0
+
+#Playback values
+is_sb = False
+is_rw = False
+is_playing = False
+is_ff = False
+is_sf = False
 
 def open_file(filepath):
     global y, sr
@@ -94,10 +99,6 @@ def play_audio():
         sd.play(tuned_y * volume, sr)
     elif y is not None:
         sd.play(y * volume, sr)
-
-def mute_input_audio():
-    global mic_mute_enabled 
-    mic_mute_enabled = not mic_mute_enabled
 
 def stop_audio():
     sd.stop()
