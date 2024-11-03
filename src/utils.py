@@ -165,10 +165,9 @@ def record_audio():
             recording_thread = None  # Reset the thread variable
             decibels_L,decibels_R=-60,-60
 
-        if raw_y is not None:
+        if raw_y is not None and raw_y:
             y = np.concatenate(raw_y, axis=0)
-            if y.ndim == 2 and y.shape[1] == 2:
-                y = np.mean(y, axis=1)
+            y = np.mean(y, axis=1)
 
         if tuner_enabled:
              autotune()
