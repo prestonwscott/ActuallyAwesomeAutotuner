@@ -88,8 +88,6 @@ class Effect(tk.Frame):
         reverb_size.grid(column=0, row=2)
         reverb_entry = tk.Entry(frame_body, width=3, textvariable=room_size, font=("Default", 12))
         reverb_entry.grid(column=1,row=2, pady=15)
-        reverb_button = tk.Button(frame_body, text="Add Reverb", command=lambda: on_click(id="Add reverb", tkVar=room_size.get()))
-        reverb_button.grid(column=2,row=2)
 
         delay = tk.IntVar(value=0)
         delay_label = tk.Label(frame_body, text="Delay", font=("Default", 14, "bold"))
@@ -98,8 +96,6 @@ class Effect(tk.Frame):
         delay_seconds.grid(column=0, row=4)
         delay_entry = tk.Entry(frame_body, width=3, textvariable=delay, font=("Default", 12))
         delay_entry.grid(column=1, row=4, pady=15)
-        delay_button = tk.Button(frame_body, text="Add Delay", command=lambda: on_click(id="Add delay", tkVar=delay.get()))
-        delay_button.grid(column=2, row=4)
 
         pitch = tk.IntVar(value=0)
         pitch_label = tk.Label(frame_body, text="Pitch", font=("Default", 14, "bold"))
@@ -108,8 +104,6 @@ class Effect(tk.Frame):
         pitch_steps.grid(column=0, row=6)
         pitch_entry = tk.Entry(frame_body, width=3, textvariable=pitch, font=("Default", 12))
         pitch_entry.grid(column=1, row=6, pady=15)
-        pitch_button = tk.Button(frame_body, text="Shift Pitch", command=lambda: on_click(id="Shift pitch", tkVar=pitch.get()))
-        pitch_button.grid(column=2, row=6)
 
         th = tk.DoubleVar(value=0)
         compressor_label = tk.Label(frame_body, text="Compressor", font=("Default", 14, "bold"))
@@ -118,8 +112,6 @@ class Effect(tk.Frame):
         compressor_th.grid(column=0, row=8)
         compressor_entry = tk.Entry(frame_body, textvariable=th, width=3, font=("Default", 12))
         compressor_entry.grid(column=1, row=8, pady=15)
-        compressor_button = tk.Button(frame_body, text="Compress Audio", command=lambda: on_click(id="Add compression", tkVar=th.get()))
-        compressor_button.grid(column=2, row=8)
 
         drive_db = tk.DoubleVar(value=0)
         distortion_label = tk.Label(frame_body, text="Distortion", font=("Default", 14, "bold"))
@@ -128,8 +120,9 @@ class Effect(tk.Frame):
         distortion_drive.grid(column=0, row=10)
         distortion_entry = tk.Entry(frame_body, textvariable=drive_db, width=3, font=("Default", 12))
         distortion_entry.grid(column=1, row=10)
-        distortion_button = tk.Button(frame_body, text="Add Distortion", command=lambda: on_click(id="Add distortion", tkVar=drive_db.get()))
-        distortion_button.grid(column=2, row=10)
+
+        save_button = tk.Button(frame_body, text="Save effects", command=lambda: bake_effects(room_size.get(),delay.get(),pitch.get(),th.get(),drive_db.get()))
+        save_button.grid(column=1,row=11)
 
         frame_body.grid(row=0,column=0)
 

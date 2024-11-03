@@ -1,6 +1,5 @@
 import tkinter as tk
 from .utils import *
-import sounddevice as sd
 from tkinter import StringVar, Label, OptionMenu
 
 def darken_color(parent, color, factor):
@@ -21,10 +20,10 @@ def on_click(parent=None, id="None", tkVar=0):
         print("")
 
     if(id == "Microphone toggle"):
-        record_audio(autotune)
+        record_audio()
 
     if(id == "Mute toggle"):
-        mute_audio()
+        mute_input_audio()
 
     if(id == "Skip back"):
         print("")
@@ -46,22 +45,6 @@ def on_click(parent=None, id="None", tkVar=0):
 
     if(id == "Volume mute toggle"):
         print("")
-    
-    if(id == "Add reverb"):
-        print(tkVar)
-        add_reverb(tkVar)
-    
-    if(id=="Add delay"):
-        add_delay(tkVar)
-
-    if(id=="Shift pitch"):
-        shift_pitch(tkVar)
-    
-    if(id=="Add compression"):
-        add_compression(tkVar)
-
-    if(id=="Add distortion"):
-        add_distortion(tkVar)
 
 def on_enter(parent, shapes, factor):
     for shape in shapes:
