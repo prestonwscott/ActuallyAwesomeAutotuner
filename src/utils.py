@@ -24,7 +24,8 @@ def open_file():
     if res:
         filepath = filedialog.askopenfilename(title="Select a WAV file", filetypes=(("WAV files", "*.wav"), ("All files", "*.*")))
         if filepath:
-            y, sr = librosa.load(filepath)
+            y, sr = librosa.load(filepath, sr=sr, mono=True)
+            print(sr)
             tuned_y = None
             num_chunks = int(np.ceil(len(y) / sr))
             raw_y = []
