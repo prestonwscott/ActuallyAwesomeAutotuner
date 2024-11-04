@@ -44,12 +44,12 @@ class MainApp:
         self.effects_tab = tk.Frame(self.notebook)
         self.notebook.add(self.effects_tab, text="Effects")
         effects = Effect(self.effects_tab)
-        effects.pack()
+        effects.pack(padx=50, pady=100)
 
-        self.devices_tab = tk.Frame(self.notebook, bg=window_color)
+        self.devices_tab = tk.Frame(self.notebook)
         self.notebook.add(self.devices_tab, text="Devices")
         devices = Devices(self.devices_tab)
-        devices.pack()
+        devices.pack(padx=50, pady=100)
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -73,8 +73,6 @@ class MainApp:
         self.meters.append(left_meter)
         self.meters.append(right_meter)
         self.root.after(100, self.update_DBmeter)
-    
-        pass
         
     def open_device_config(self):
         self.notebook.select(self.devices_tab)

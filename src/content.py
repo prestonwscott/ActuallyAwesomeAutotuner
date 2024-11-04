@@ -1,9 +1,12 @@
 import tkinter as tk
+from .globals import *
 from .lib import *
 
 class Content(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+        #global panel_color, window_color, button_toggled, button_untoggled, button_hover
+        #global tuner_enabled, metronome_enabled, speed_enabled, mic_mute_enabled, extend_file_enabled, vol_mute_enabled
 
         frame_master = tk.Frame(self, bg=window_color)
         frame_body = tk.Frame(frame_master, bg=window_color)
@@ -82,84 +85,78 @@ class Effect(tk.Frame):
         super().__init__(parent)
 
         frame_body = tk.Frame(self)
+        padding_y = 30
 
         room_size = tk.DoubleVar(value=0)
-        reverb_label = tk.Label(frame_body, text="Reverb",  font=("Default", 14, "bold"))
-        reverb_label.grid(column=1,row=0)
-        reverb_size = tk.Label(frame_body, text="Room size", font=("Default", 12, "bold"))
-        reverb_size.grid(column=0, row=2)
-        reverb_entry = tk.Entry(frame_body, width=3, textvariable=room_size, font=("Default", 12))
-        reverb_entry.grid(column=1,row=2, pady=15)
+        reverb_label = tk.Label(frame_body, text="Reverb",  font=("Default", 12, "bold"))
+        reverb_label.grid(column=0, row=0)
+        reverb_entry = tk.Entry(frame_body, width=3, textvariable=room_size, font=("Default", 10))
+        reverb_entry.grid(column=1, row=0)
+        reverb_size = tk.Label(frame_body, text="room size (0-1)", font=("Default", 10))
+        reverb_size.grid(column=2, row=0, pady=padding_y)
+        
+        pitch = tk.IntVar(value=0)
+        pitch_label = tk.Label(frame_body, text="Pitch", font=("Default", 12, "bold"))
+        pitch_label.grid(column=0, row=2)
+        pitch_entry = tk.Entry(frame_body, width=3, textvariable=pitch, font=("Default", 10))
+        pitch_entry.grid(column=1, row=2)
+        pitch_steps = tk.Label(frame_body, text="steps", font=("Default", 10))
+        pitch_steps.grid(column=2, row=2, pady=padding_y)
 
         delay = tk.IntVar(value=0)
-        delay_label = tk.Label(frame_body, text="Delay", font=("Default", 14, "bold"))
-        delay_label.grid(column=1, row=3)
-        delay_seconds = tk.Label(frame_body, text="Delay (in s)", font=("Default", 14, "bold"))
-        delay_seconds.grid(column=0, row=4)
-        delay_entry = tk.Entry(frame_body, width=3, textvariable=delay, font=("Default", 12))
-        delay_entry.grid(column=1, row=4, pady=15)
-
-        pitch = tk.IntVar(value=0)
-        pitch_label = tk.Label(frame_body, text="Pitch", font=("Default", 14, "bold"))
-        pitch_label.grid(column=1, row=5)
-        pitch_steps = tk.Label(frame_body, text="Steps", font=("Default", 14, "bold"))
-        pitch_steps.grid(column=0, row=6)
-        pitch_entry = tk.Entry(frame_body, width=3, textvariable=pitch, font=("Default", 12))
-        pitch_entry.grid(column=1, row=6, pady=15)
-
+        delay_label = tk.Label(frame_body, text="Delay", font=("Default", 12, "bold"))
+        delay_label.grid(column=0, row=1)
+        delay_entry = tk.Entry(frame_body, width=3, textvariable=delay, font=("Default", 10))
+        delay_entry.grid(column=1, row=1)
+        delay_seconds = tk.Label(frame_body, text="delay (in s)", font=("Default", 10))
+        delay_seconds.grid(column=2, row=1, pady=padding_y)
+        
         th = tk.DoubleVar(value=0)
-        compressor_label = tk.Label(frame_body, text="Compressor", font=("Default", 14, "bold"))
-        compressor_label.grid(column=1, row=7)
-        compressor_th = tk.Label(frame_body, text="Thresehold (dB)", font=("Default", 14, "bold"))
-        compressor_th.grid(column=0, row=8)
-        compressor_entry = tk.Entry(frame_body, textvariable=th, width=3, font=("Default", 12))
-        compressor_entry.grid(column=1, row=8, pady=15)
+        compressor_label = tk.Label(frame_body, text="Compressor", font=("Default", 12, "bold"))
+        compressor_label.grid(column=0, row=3)
+        compressor_entry = tk.Entry(frame_body, textvariable=th, width=3, font=("Default", 10))
+        compressor_entry.grid(column=1, row=3)
+        compressor_th = tk.Label(frame_body, text="thresehold (dB)", font=("Default", 10))
+        compressor_th.grid(column=2, row=3, pady=padding_y)
 
         drive_db = tk.DoubleVar(value=0)
-        distortion_label = tk.Label(frame_body, text="Distortion", font=("Default", 14, "bold"))
-        distortion_label.grid(column=1, row=9)
-        distortion_drive = tk.Label(frame_body, text="Drive (dB)", font=("Default", 14, "bold"))
-        distortion_drive.grid(column=0, row=10)
-        distortion_entry = tk.Entry(frame_body, textvariable=drive_db, width=3, font=("Default", 12))
-        distortion_entry.grid(column=1, row=10)
-
+        distortion_label = tk.Label(frame_body, text="Distortion", font=("Default", 12, "bold"))
+        distortion_label.grid(column=0, row=4)
+        distortion_entry = tk.Entry(frame_body, textvariable=drive_db, width=3, font=("Default", 10))
+        distortion_entry.grid(column=1, row=4)
+        distortion_drive = tk.Label(frame_body, text="drive (dB)", font=("Default", 10))
+        distortion_drive.grid(column=2, row=4, pady=padding_y)
+        
         save_button = tk.Button(frame_body, text="Save effects", command=lambda: bake_effects(room_size.get(),delay.get(),pitch.get(),th.get(),drive_db.get()))
-        save_button.grid(column=1,row=11)
-
-        frame_body.grid(row=0,column=0)
+        save_button.grid(column=1, row=5, pady=padding_y)
+        frame_body.pack()
 
 class Devices(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        width=300
-        height=200
-        frame = tk.Frame(parent, bg="white")
+        frame_body = tk.Frame(self)
+        padding_y = 30
     
-        input_label = Label(frame, text="Select Input Device:", font=("Default", 10, "bold"), bg="white")
-        input_label.pack(pady=(10, 0))
+        input_label = Label(frame_body, text="Select Input Device:", font=("Default", 12, "bold"))
+        input_label.grid(column=0, row=0)
         
         input_device_var = StringVar()
         input_device_var.set(input_devices[0] if input_devices else "No input device found")
-        input_device_dropdown = OptionMenu(frame, input_device_var, *input_devices)
-        input_device_dropdown.config(width=width // 10)
-        input_device_dropdown.pack(pady=5)
+        input_device_dropdown = OptionMenu(frame_body, input_device_var, *input_devices)
+        input_device_dropdown.grid(column=0, row=1, pady=padding_y)
         
-        output_label = Label(frame, text="Select Output Device:", font=("Default", 10, "bold"), bg="white")
-        output_label.pack(pady=(10, 0))
+        output_label = Label(frame_body, text="Select Output Device:", font=("Default", 12, "bold"))
+        output_label.grid(column=0, row=2, pady=(padding_y, 0))
         
         output_device_var = StringVar()
         output_device_var.set(output_devices[0] if output_devices else "No output device found")
-        output_device_dropdown = OptionMenu(frame, output_device_var, *output_devices)
-        output_device_dropdown.config(width=width // 10)
-        output_device_dropdown.pack(pady=5)
+        output_device_dropdown = OptionMenu(frame_body, output_device_var, *output_devices)
+        output_device_dropdown.grid(column=0, row=3, pady=padding_y)
         
         def save_device_selection():
             sd.default.device = (all_devices.index(input_device_var.get()), all_devices.index(output_device_var.get()))
 
-        save_button = tk.Button(frame, text="Save Selection", command=save_device_selection)
-        save_button.pack(pady=10)
-        
-        frame.pack_propagate(False)
-        frame.config(width=width, height=height)
-        frame.pack()
+        save_button = tk.Button(frame_body, text="Save Selection", command=save_device_selection)
+        save_button.grid(column=0, row=4, pady=padding_y)
+        frame_body.pack()

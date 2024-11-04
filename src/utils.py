@@ -5,58 +5,17 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 import psola
-import threading
 import random
 import threading as t
 from tkinter import messagebox
 from tkinter import filedialog
+from tkinter import DoubleVar
 from functools import partial
 from pedalboard import Pedalboard, Reverb, Delay, Compressor, Distortion
+from .globals import *
+
 #NOTE: Loading a saved recording will import it and tuned material cannot be toggled.
 #      'y' represents the numpy audio stream, 'sr' is the sample rate of y
-
-#Sound device defaults
-sd.default.samplerate = 44100
-sd.default.device = 0
-
-#Recording info
-mic_pressed = False
-y = None
-raw_y = None
-tuned_y = None
-sr = sd.default.samplerate
-recording_thread = None
-recording_started = False
-decibels_L,decibels_R = -60,-60
-devices = sd.query_devices()
-all_devices = [device['name'] for device in devices]
-input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
-output_devices = [device['name'] for device in devices if device['max_output_channels'] > 0]
-meters = []
-
-#Toggle values
-tuner_enabled = True
-metronome_enabled = True
-speed_enabled = False
-mic_mute_enabled = False
-extend_file_enabled = False
-vol_mute_enabled = False
-
-#Control values
-volume = 1
-speed = 1.0
-reverb = 0
-pitch = 0
-delay = 0
-compression = 0
-distortion = 0
-
-#Playback values
-is_sb = False
-is_rw = False
-is_playing = False
-is_ff = False
-is_sf = False
 
 def open_file(filepath):
     global y, sr
@@ -94,7 +53,7 @@ def change_volume(new_volume):
     volume = new_volume
 
 def play_audio():
-    global y, tuned_y, volume, sr, tuner_enabled
+    global y, tuned_y, volume, sr
     if tuner_enabled and tuned_y is not None:
         sd.play(tuned_y * volume, sr)
     elif y is not None:
@@ -152,7 +111,7 @@ def record_audio():
                 while recording_started:
                     sd.sleep(100)  # Keep the stream open
 
-        recording_thread = threading.Thread(target=start_stream)
+        recording_thread = t.Thread(target=start_stream)
         recording_thread.start()
     else:
         # Stop recording
@@ -171,10 +130,13 @@ def record_audio():
             y = np.mean(y, axis=1)
 
         if tuner_enabled:
-             autotune()
+            t.Thread(target=autotune).start()
 
 def get_decibels():
     return decibels_L, decibels_R
+
+def get_test():
+    return tuner_enabled
 
 def bake_effects(new_reverb, new_delay, new_pitch, new_compression, new_distortion):
     global tuned_y, sr, reverb, delay, pitch, compression, distortion
@@ -210,4 +172,4 @@ def autotune():
     nan_indices = np.isnan(f0)
     midi_note[nan_indices] = np.nan
     tuned_y = psola.vocode(y, sample_rate=int(sr), target_pitch=librosa.midi_to_hz(midi_note), fmin=fmin, fmax=fmax)
-    play_audio()
+    

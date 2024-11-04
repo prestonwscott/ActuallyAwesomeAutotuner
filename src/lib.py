@@ -1,58 +1,52 @@
 import tkinter as tk
 from .utils import *
 from tkinter import StringVar, Label, OptionMenu
-
-#Default colors
-panel_color = "white"
-#window_color = "#f0f0f0"
-window_color = "red"
-button_toggled = "light grey"
-button_untoggled = "white"
-button_hover = "grey"
+from .globals import *
 
 def on_click(parent=None, id="None"):
     if parent is not None:
         change_color(parent)
 
     if(id == "Tuner toggle"):
-        global tuner_enabled 
         tuner_enabled = not tuner_enabled
+        print(tuner_enabled)
+        print(get_test())
     
-    if(id == "Metronome toggle"):
-        global metronome_enabled 
+    elif(id == "Metronome toggle"):
+        global metronome_enabled
         metronome_enabled = not metronome_enabled
 
-    if(id == "Speed toggle"):
+    elif(id == "Speed toggle"):
         global speed_enabled
         speed_enabled = not speed_enabled
 
-    if(id == "Microphone toggle"):
+    elif(id == "Microphone toggle"):
         record_audio()
 
-    if(id == "Mute toggle"):
+    elif(id == "Mute toggle"):
         global mic_mute_enabled
         mic_mute_enabled = not mic_mute_enabled
 
-    if(id == "Skip back"):
+    elif(id == "Skip back"):
         pass
     
-    if(id == "Rewind"):
+    elif(id == "Rewind"):
         pass
 
-    if(id == "Play"):
-        pass
+    elif(id == "Play"):
+        play_audio()
 
-    if(id == "Fast forward"):
+    elif(id == "Fast forward"):
         pass
         
-    if(id == "Skip forward"):
+    elif(id == "Skip forward"):
         pass
     
-    if(id == "Extend file"):
+    elif(id == "Extend file"):
         global extend_file_enabled
         extend_file_enabled = not extend_file_enabled
 
-    if(id == "Volume mute toggle"):
+    elif(id == "Volume mute toggle"):
         global vol_mute_enabled
         vol_mute_enabled = not vol_mute_enabled
 
@@ -99,7 +93,7 @@ def change_color(parent):
 
 def get_parent_color(parent):
     parent_color = parent.cget("background")
-    if parent_color == "SystemButtonFace":
+    if "system" in parent_color.lower():
         return panel_color
     else:
         return parent_color
