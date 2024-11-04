@@ -18,6 +18,7 @@ raw_y = None
 tuned_y = None
 sr = sd.default.samplerate
 recording_thread = None
+met_thread = None
 recording_started = False
 decibels_L,decibels_R = -60,-60
 devices = sd.query_devices()
@@ -42,6 +43,8 @@ pitch = 0
 delay = 0
 compression = 0
 distortion = 0
+bpm = 60
+signature = "4 / 4"
 
 #Playback values
 is_sb = False

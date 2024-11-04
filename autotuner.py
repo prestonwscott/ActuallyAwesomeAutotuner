@@ -1,18 +1,19 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from src import *
 
 class MainApp:
     def __init__(self, root):
         self.root = root
         root.title("Autotuner")
-        root.resizable(width=True, height=True)
+        root.resizable(width=False, height=False)
 
         menu_bar = tk.Menu(root)
         file_menu = tk.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="New")
-        file_menu.add_command(label="Open")
+        file_menu.add_command(label="New", command=self.new_file)
+        file_menu.add_command(label="Open", command=self.open_file)
         file_menu.add_command(label="Save As...", command=utils.save_audio)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
@@ -30,8 +31,12 @@ class MainApp:
 
         # Left frame
         left_frame = tk.Frame(main_frame, bg=window_color)
-        content = Content(left_frame)
-        content.pack(padx=60, pady=60)
+        self.content = Content(left_frame)
+        self.content.pack(padx=60, pady=60)
+        fmaster = self.content.nametowidget("frame_master")
+        ffooter = fmaster.nametowidget("frame_footer")
+        fprogress = ffooter.nametowidget("frame_progress")
+        self.progress = fprogress.nametowidget("label_progress")
         
         # Right frame
         style = ttk.Style()
@@ -76,7 +81,18 @@ class MainApp:
         
     def open_device_config(self):
         self.notebook.select(self.devices_tab)
-        print("Device Configuration Selected")
+        messagebox.showinfo("Help", "To set your desired output and input devices, please select them from the listboxes on this page.")
+
+    def new_file(self):
+        res = utils.clear_file()
+        if res:
+            self.progress.config(text="0:00/0:00")
+
+    def open_file(self):
+        res = utils.open_file()
+        if res:
+            print(utils.get_duration())
+            self.progress.config(text="0:00/" + utils.get_duration())
 
 if __name__ == "__main__":
     # Initialize the window

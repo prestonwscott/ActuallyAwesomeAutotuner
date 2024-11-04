@@ -1,54 +1,74 @@
 import tkinter as tk
+import re
+from .globals import *
 from .utils import *
 from tkinter import StringVar, Label, OptionMenu
-from .globals import *
 
-def on_click(parent=None, id="None"):
+def on_click(parent=None, progress=None):
     if parent is not None:
         change_color(parent)
-
-    if(id == "Tuner toggle"):
-        tuner_enabled = not tuner_enabled
-        print(tuner_enabled)
-        print(get_test())
     
-    elif(id == "Metronome toggle"):
-        global metronome_enabled
-        metronome_enabled = not metronome_enabled
+    id = parent._name
+    if(id == "tuner toggle"):
+        toggle_tuner()
+    
+    elif(id == "metronome toggle"):
+        toggle_metro()
 
-    elif(id == "Speed toggle"):
-        global speed_enabled
-        speed_enabled = not speed_enabled
+    elif(id == "speed toggle"):
+        toggle_speed()
 
-    elif(id == "Microphone toggle"):
+    elif(id == "microphone toggle"):
         record_audio()
+        if progress is not None:
+            progress.config(text="0:00/" + get_duration())
 
-    elif(id == "Mute toggle"):
-        global mic_mute_enabled
-        mic_mute_enabled = not mic_mute_enabled
+    elif(id == "mute toggle"):
+        toggle_mic_mute()
 
-    elif(id == "Skip back"):
+    elif(id == "skip back"):
         pass
     
-    elif(id == "Rewind"):
+    elif(id == "rewind"):
         pass
 
-    elif(id == "Play"):
-        play_audio()
+    elif(id == "play"):
+        global is_playing
+        is_playing = not is_playing
+        icon_path = "assets/play.png" if not is_playing else "assets/pause.png"
+        icon_photo = tk.PhotoImage(file=icon_path)
+        parent.create_image(int(parent.cget("width")) / 2, int(parent.cget("height")) / 2, image=icon_photo)
+        parent.image = icon_photo
+        toggle_play()
 
-    elif(id == "Fast forward"):
+    elif(id == "fast forward"):
         pass
         
-    elif(id == "Skip forward"):
+    elif(id == "skip forward"):
         pass
     
-    elif(id == "Extend file"):
-        global extend_file_enabled
-        extend_file_enabled = not extend_file_enabled
+    elif(id == "extend file"):
+        toggle_extend()
 
-    elif(id == "Volume mute toggle"):
-        global vol_mute_enabled
-        vol_mute_enabled = not vol_mute_enabled
+    elif(id == "volume mute toggle"):
+        toggle_vol_mute()
+
+def on_text_modified(parent):
+    id = parent._name
+    value = parent.get()
+    if(id == "tempo"):
+        if value.isdigit() and (int(value) >= 1 and int(value) <= 120):
+            set_bpm(int(value))
+        else:
+            parent.delete(0, tk.END)
+            parent.insert(0, str(get_bpm()))
+    elif(id == "signature"):
+        pattern = r'^[1-9] / [1-9]$'
+        if re.fullmatch(pattern, value):
+            set_signature(value)
+        else:
+            parent.delete(0, tk.END)
+            parent.insert(0, get_signature())
 
 def on_enter(parent):
     shapes = parent.find_all()
@@ -120,9 +140,9 @@ def create_rounded_rect(parent, x, y, width, height, color):
     shapes.append(parent.create_rectangle(x, y + radius, x + width, y + height - radius, fill=color, outline=""))
     return shapes
 
-def create_panel(parent, width, height, icon_path=None, include_meter=False):
+def create_panel(parent, width, height, icon_path=None, include_meter=False, name=None):
     global dynamic_canvas,meters
-    frame = tk.Frame(parent)
+    frame = tk.Frame(parent, name=name)
     canvas = tk.Canvas(frame, width=width, height=height, highlightthickness=0, bg=window_color)
     create_rounded_rect(canvas, 0, 0, width, height, panel_color)
     if icon_path is not None:
@@ -145,9 +165,9 @@ def get_dynamic_canvas():
 def get_meters():
     return meters
 
-def create_button(parent, width, height, id, toggled=False, icon_path=None, text=None):
+def create_button(parent, width, height, id, toggled=False, icon_path=None, text=None, progress=None):
     parent_color = get_parent_color(parent)
-    canvas = tk.Canvas(parent, width=width, height=height, bg=parent_color, highlightthickness=0)
+    canvas = tk.Canvas(parent, width=width, height=height, bg=parent_color, highlightthickness=0, name=id.lower())
     create_rounded_rect(canvas, 0, 0, width, height, button_toggled if toggled else button_untoggled)
     if icon_path is not None:
         icon_photo = tk.PhotoImage(file=icon_path)
@@ -157,7 +177,7 @@ def create_button(parent, width, height, id, toggled=False, icon_path=None, text
         label = tk.Label(canvas, text=text, fg="black", font=("Default", 8, "bold"), bg=parent_color)
         canvas.create_window(24, 10, window=label)
 
-    canvas.bind("<Button-1>", lambda e: on_click(parent=canvas, id=id))
+    canvas.bind("<Button-1>", lambda e: on_click(parent=canvas, progress=progress))
     canvas.bind("<Enter>", lambda e: on_enter(parent=canvas))
     canvas.bind("<Leave>", lambda e: on_leave(parent=canvas))
     return canvas
@@ -199,11 +219,12 @@ def create_textbox(parent, width, height, label_txt, default):
     parent_color = get_parent_color(parent)
     canvas = tk.Canvas(parent, width=width, height=height+20, bg=parent_color, highlightthickness=0)
     label = tk.Label(canvas, text=label_txt, fg="black", font=("Default", 8, "bold"), bg=parent_color)
-    input_box = tk.Entry(canvas, width=4, justify="center", fg="black", font=("Default", 12, "bold"), bg=button_toggled)
+    input_box = tk.Entry(canvas, width=4, justify="center", fg="black", font=("Default", 12, "bold"), bg=button_toggled, name=label_txt.lower())
     input_box.insert(0, default)
     shapes = create_rounded_rect(canvas, 0, 20, width, height, button_toggled)
     
     canvas.create_window(36, 10, window=label)
     canvas.create_window(36, 36, window=input_box)
+    input_box.bind("<FocusOut>", lambda e: on_text_modified(parent=input_box))
     canvas.pack()
     return canvas

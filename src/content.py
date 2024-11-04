@@ -1,14 +1,11 @@
 import tkinter as tk
-from .globals import *
 from .lib import *
+from .globals import *
 
 class Content(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        #global panel_color, window_color, button_toggled, button_untoggled, button_hover
-        #global tuner_enabled, metronome_enabled, speed_enabled, mic_mute_enabled, extend_file_enabled, vol_mute_enabled
-
-        frame_master = tk.Frame(self, bg=window_color)
+        frame_master = tk.Frame(self, bg=window_color, name="frame_master")
         frame_body = tk.Frame(frame_master, bg=window_color)
         frame_config = tk.Frame(frame_body, bg=window_color)
         panel_tune = create_panel(frame_config, 100, 216)
@@ -24,9 +21,9 @@ class Content(tk.Frame):
         panel_metro.grid(column=0, row=1, pady=8)
         button_metro = create_button(panel_metro, 48, 48, "Metronome toggle", toggled=metronome_enabled, icon_path="assets/metronome.png")
         button_metro.place(x=26, y=8)
-        textbox_tempo = create_textbox(panel_metro, 72, 32, "Tempo", 120)
+        textbox_tempo = create_textbox(panel_metro, 72, 32, "Tempo", bpm)
         textbox_tempo.place(x=14, y=62)
-        textbox_signature = create_textbox(panel_metro, 72, 32, "Signature", "4 / 4")
+        textbox_signature = create_textbox(panel_metro, 72, 32, "Signature", signature)
         textbox_signature.place(x=14, y=122)
 
         panel_speed = create_panel(frame_config, 100, 140)
@@ -37,14 +34,11 @@ class Content(tk.Frame):
         dial_speed.place(x=26, y=62)
         frame_config.grid(column=0, row=0,)
 
-        button_microphone = create_button(frame_body, 250, 550, "Microphone toggle", toggled=recording_started, icon_path="assets/microphone.png")
-        button_microphone.grid(column=1, row=0, padx=32, pady=16)
-
         panel_reader = create_panel(frame_body, 100, 550, icon_path="assets/decibelbar.png", include_meter=True)
         panel_reader.grid(column=2, row=0)
         frame_body.grid(column=0, row=0)
 
-        frame_footer = create_panel(frame_master, 560, 160)
+        frame_footer = create_panel(frame_master, 560, 160, name="frame_footer")
         frame_playback = tk.Frame(frame_footer, bg=panel_color)
         button_mute = create_button(frame_playback, 34, 34, "Mute toggle", toggled=mic_mute_enabled, icon_path="assets/mute.png")
         button_mute.grid(column=0, row=0, padx=50, pady=16)
@@ -52,8 +46,6 @@ class Content(tk.Frame):
         button_skipback.grid(column=1, row=0, padx=4)
         button_rewind = create_button(frame_playback, 34, 34, "Rewind", toggled=is_rw, icon_path="assets/rewind.png")
         button_rewind.grid(column=2, row=0, padx=4)
-        button_playpause = create_button(frame_playback, 34, 34, "Play", toggled=is_playing, icon_path="assets/play.png")
-        button_playpause.grid(column=3, row=0, padx=20)
         button_fastforward = create_button(frame_playback, 34, 34, "Fast forward", toggled=is_ff, icon_path="assets/fastforward.png")
         button_fastforward.grid(column=4, row=0, padx=4)
         button_skipforward = create_button(frame_playback, 34, 34, "Skip forward", toggled=is_sf, icon_path="assets/skipforward.png")
@@ -73,11 +65,17 @@ class Content(tk.Frame):
         slider_volume.pack(side=tk.RIGHT, anchor=tk.CENTER, expand=True)
         frame_volume.place(x=110, y=120)
 
-        frame_progress = tk.Frame(frame_footer, bg=panel_color)
-        label_progress = tk.Label(frame_progress, text="0:05/0:47", fg="black", font=("Default", 14, "bold"), bg=panel_color)
+        frame_progress = tk.Frame(frame_footer, bg=panel_color, name="frame_progress")
+        label_progress = tk.Label(frame_progress, text="0:00/0:00", fg="black", font=("Default", 14, "bold"), bg=panel_color, name="label_progress")
         label_progress.pack()
         frame_progress.place(x=340, y=120)
         frame_footer.grid(column=0, row=1)
+
+        button_microphone = create_button(frame_body, 250, 550, "Microphone toggle", toggled=recording_started, icon_path="assets/microphone.png", progress=label_progress)
+        button_microphone.grid(column=1, row=0, padx=32, pady=16)
+
+        button_playpause = create_button(frame_playback, 34, 34, "Play", toggled=is_playing, icon_path="assets/play.png", progress=label_progress)
+        button_playpause.grid(column=3, row=0, padx=20)
         frame_master.pack()
 
 class Effect(tk.Frame):
@@ -127,7 +125,7 @@ class Effect(tk.Frame):
         distortion_drive = tk.Label(frame_body, text="drive (dB)", font=("Default", 10))
         distortion_drive.grid(column=2, row=4, pady=padding_y)
         
-        save_button = tk.Button(frame_body, text="Save effects", command=lambda: bake_effects(room_size.get(),delay.get(),pitch.get(),th.get(),drive_db.get()))
+        save_button = tk.Button(frame_body, text="Apply effects", command=lambda: bake_effects(room_size.get(),delay.get(),pitch.get(),th.get(),drive_db.get()))
         save_button.grid(column=1, row=5, pady=padding_y)
         frame_body.pack()
 
