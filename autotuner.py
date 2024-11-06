@@ -1,61 +1,60 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from src import *
 
 class MainApp:
     def __init__(self, root):
         self.root = root
         root.title("Autotuner")
-        # Set the window geometry
-        root.resizable(width=True, height=True)
+        root.resizable(width=False, height=False)
 
-        # Create a menu bar
         menu_bar = tk.Menu(root)
-
-        # Create a File menu
         file_menu = tk.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="New")
-        file_menu.add_command(label="Open")
+        file_menu.add_command(label="New", command=self.new_file)
+        file_menu.add_command(label="Open", command=self.open_file)
         file_menu.add_command(label="Save As...", command=utils.save_audio)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        # Create a Help menu
         help_menu = tk.Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Device Configuration", command=self.open_device_config)
-        help_menu.add_command(label="Using the autotuner")
-        help_menu.add_command(label="Saving recordings")
-        help_menu.add_command(label="About")
+        help_menu.add_command(label="Using the autotuner", command=self.using_autotune)
+        help_menu.add_command(label="Saving recordings", command=self.saving_recs)
+        help_menu.add_command(label="About", command=self.show_about)
         menu_bar.add_cascade(label="Help", menu=help_menu)
 
-        # Configure the menu bar
         root.config(menu=menu_bar)
 
-        # Main frame to hold everything
         main_frame = tk.Frame(root)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Left frame
-        left_frame = tk.Frame(main_frame)
-        content = Content(left_frame)
-        content.pack(padx=60, pady=60)
+        left_frame = tk.Frame(main_frame, bg=window_color)
+        self.content = Content(left_frame)
+        self.content.pack(padx=60, pady=60)
+        fmaster = self.content.nametowidget("frame_master")
+        ffooter = fmaster.nametowidget("frame_footer")
+        fprogress = ffooter.nametowidget("frame_progress")
+        self.progress = fprogress.nametowidget("label_progress")
         
-        # Create the notebook in the right frame
-        right_frame = tk.Frame(main_frame)
-        self.notebook = ttk.Notebook(right_frame)
+        # Right frame
+        style = ttk.Style()
+        right_frame = tk.Frame(main_frame, bg=window_color)
+        style.configure("TNotebook", background=window_color)
+        style.configure("TNotebook.Tab", background=window_color, padding=[10, 5])
+        self.notebook = ttk.Notebook(right_frame, style="TNotebook")
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # Create the effects and devices tabs
-        self.effects_tab = ttk.Frame(self.notebook)
+        self.effects_tab = tk.Frame(self.notebook)
         self.notebook.add(self.effects_tab, text="Effects")
         effects = Effect(self.effects_tab)
-        effects.pack()
+        effects.pack(padx=50, pady=100)
 
-        self.devices_tab = ttk.Frame(self.notebook)
+        self.devices_tab = tk.Frame(self.notebook)
         self.notebook.add(self.devices_tab, text="Devices")
-        
-        # Display Input and Output device options
-        self.create_device_config_menu(self.devices_tab, width=300, height=200)
+        devices = Devices(self.devices_tab)
+        devices.pack(padx=50, pady=100)
 
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -79,15 +78,30 @@ class MainApp:
         self.meters.append(left_meter)
         self.meters.append(right_meter)
         self.root.after(100, self.update_DBmeter)
-    
-        pass
-
-    def create_device_config_menu(self, parent, width, height):
-        lib.create_device_config_menu(parent, width, height)
         
     def open_device_config(self):
         self.notebook.select(self.devices_tab)
-        print("Device Configuration Selected")
+        messagebox.showinfo("Help", "To set your desired output and input devices, please select them from the listboxes on this page.")
+
+    def new_file(self):
+        res = utils.clear_file()
+        if res:
+            self.progress.config(text="0:00/0:00")
+
+    def open_file(self):
+        res = utils.open_file()
+        if res:
+            print(utils.get_duration())
+            self.progress.config(text="0:00/" + utils.get_duration())
+
+    def show_about(self):
+        messagebox.showinfo("About", "This app was developed by Preston, Vince, Sibi, and Andrew as part of a class project, enjoy!")
+
+    def saving_recs(self):
+        messagebox.showinfo("Help", "To save a recording, make sure you have audio recorded and then click on the top left buttons in this sequence (File > Save As...)")
+
+    def using_autotune(self):
+        messagebox.showinfo("Help", "To use the autotuner, make sure your device configuration is up to spec and simply click on the big microphone button. To toggle the autotuning feature on/off, press the tuning fork button on the top left of the screen.")
 
 if __name__ == "__main__":
     # Initialize the window
