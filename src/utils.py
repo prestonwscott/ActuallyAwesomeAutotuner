@@ -97,14 +97,33 @@ def play_metronome():
     if metronome_enabled:
         sd.play(beep, sr)
 
-def play_audio():
-    global y, tuned_y, volume, sr
+def play_audio(progress):
+    global y, tuned_y, volume, sr, progress_started, progress_thread
     if tuner_enabled and tuned_y is not None:
         sd.play(tuned_y * volume, sr)
     elif y is not None:
         sd.play(y * volume, sr)
 
-def stop_audio():
+    def start_timer():
+        while progress_started:
+            global timer_s
+            time.sleep(1)
+            timer_s = timer_s + 1 
+            minutes = str(int(timer_s / 60))
+            seconds = str(int(timer_s % 60))
+            seconds = "0" + seconds if int(seconds) < 10 else seconds
+            progress.config(text=minutes + ":" + seconds + "/" + get_duration())
+
+    progress_thread = t.Thread(target=start_timer)
+    progress_thread.start()
+
+def stop_audio(progress):
+    global progress_thread, timer_s
+    if progress_thread is not None and progress_thread._started:
+            progress_thread.join()
+            progress_thread = None
+    progress.config(text="0:00/" + get_duration())
+    timer_s = 0
     sd.stop()
 
 def rms_to_db(rms):
@@ -134,7 +153,7 @@ def record_callback(indata, frames, time, status):
         raw_y.append(np.zeros_like(indata))
         decibels_L,decibels_R=-60,-60
 
-def record_audio():
+def record_audio(progress):
     global mic_pressed, recording_started, y, raw_y, met_thread, recording_thread, decibels_L, decibels_R
     if not recording_started:
         # Start recording
@@ -168,7 +187,7 @@ def record_audio():
         # Stop recording
         recording_started = False
         mic_pressed = False
-        stop_audio()
+        stop_audio(progress)
 
         if recording_thread is not None and recording_thread._started:
             recording_thread.join()
@@ -218,12 +237,12 @@ def autotune():
 def get_decibels():
     return decibels_L, decibels_R
 
-def toggle_play():
+def toggle_play(progress):
     global is_playing
     if not is_playing:
-        play_audio()
+        play_audio(progress)
     else:
-        stop_audio()
+        stop_audio(progress)
     is_playing = not is_playing
 
 def toggle_tuner():
@@ -246,18 +265,6 @@ def toggle_extend():
     global extend_file_enabled
     extend_file_enabled = not extend_file_enabled
 
-def toggle_vol_mute():
-    global vol_mute_enabled
-    vol_mute_enabled = not vol_mute_enabled
-
-def set_volume(new_volume):
-    global volume
-    volume = new_volume
-
-def set_speed(new_speed):
-    global speed
-    speed = new_speed
-
 def set_bpm(new_bpm):
     global bpm
     bpm = new_bpm
@@ -266,10 +273,3 @@ def get_bpm():
     global bpm
     return bpm
 
-def set_signature(new_signature):
-    global signature
-    signature = new_signature
-
-def get_signature():
-    global signature
-    return signature

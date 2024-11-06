@@ -19,9 +19,9 @@ class MainApp:
 
         help_menu = tk.Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Device Configuration", command=self.open_device_config)
-        help_menu.add_command(label="Using the autotuner")
-        help_menu.add_command(label="Saving recordings")
-        help_menu.add_command(label="About")
+        help_menu.add_command(label="Using the autotuner", command=self.using_autotune)
+        help_menu.add_command(label="Saving recordings", command=self.saving_recs)
+        help_menu.add_command(label="About", command=self.show_about)
         menu_bar.add_cascade(label="Help", menu=help_menu)
 
         root.config(menu=menu_bar)
@@ -93,6 +93,15 @@ class MainApp:
         if res:
             print(utils.get_duration())
             self.progress.config(text="0:00/" + utils.get_duration())
+
+    def show_about(self):
+        messagebox.showinfo("About", "This app was developed by Preston, Vince, Sibi, and Andrew as part of a class project, enjoy!")
+
+    def saving_recs(self):
+        messagebox.showinfo("Help", "To save a recording, make sure you have audio recorded and then click on the top left buttons in this sequence (File > Save As...)")
+
+    def using_autotune(self):
+        messagebox.showinfo("Help", "To use the autotuner, make sure your device configuration is up to spec and simply click on the big microphone button. To toggle the autotuning feature on/off, press the tuning fork button on the top left of the screen.")
 
 if __name__ == "__main__":
     # Initialize the window
