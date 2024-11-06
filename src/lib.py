@@ -19,7 +19,7 @@ def on_click(parent=None, progress=None):
         toggle_speed()
 
     elif(id == "microphone toggle"):
-        record_audio()
+        record_audio(progress)
         if progress is not None:
             progress.config(text="0:00/" + get_duration())
 
